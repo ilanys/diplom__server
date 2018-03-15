@@ -1,0 +1,10 @@
+c:\users\isles\source\repos\ServerMarch\ServerMarch\bin\Debug\ServerMarch.exe.config
+c:\users\isles\source\repos\ServerMarch\ServerMarch\bin\Debug\ServerMarch.exe
+c:\users\isles\source\repos\ServerMarch\ServerMarch\bin\Debug\ServerMarch.pdb
+c:\users\isles\source\repos\ServerMarch\ServerMarch\obj\Debug\ServerMarch.csprojResolveAssemblyReference.cache
+c:\users\isles\source\repos\ServerMarch\ServerMarch\obj\Debug\ServerMarch.Form1.resources
+c:\users\isles\source\repos\ServerMarch\ServerMarch\obj\Debug\ServerMarch.Properties.Resources.resources
+c:\users\isles\source\repos\ServerMarch\ServerMarch\obj\Debug\ServerMarch.csproj.GenerateResource.Cache
+c:\users\isles\source\repos\ServerMarch\ServerMarch\obj\Debug\ServerMarch.csproj.CoreCompileInputs.cache
+c:\users\isles\source\repos\ServerMarch\ServerMarch\obj\Debug\ServerMarch.exe
+c:\users\isles\source\repos\ServerMarch\ServerMarch\obj\Debug\ServerMarch.pdb
