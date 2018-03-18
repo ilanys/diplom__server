@@ -63,11 +63,15 @@ namespace ServerMarch
                         {
                             JSON += dr["header"].ToString()+"%" + dr["body"] +"%"+ dr["picture"] +"=";
                         }
+                        if(text== "Car__info")
+                        {
+                            JSON += dr["id_car"].ToString() + "%" + dr["Mark"] + "%" + dr["years"] + "=";
+                        }
 
                     }
                 }
                 
-                if(text=="News")
+                if(text=="News"||text=="Car__info")
                 {
                     sql.Close();
                     return JSON;
@@ -111,11 +115,11 @@ namespace ServerMarch
 
                 switch(reception__string.Split('/')[0])
                 {
-                    case "user": {
+                    case "user": { // Работа с пользователями
 
                        switch (reception__string.Split('/')[1])
                        {
-                          case "Add": {
+                          case "Add": {  // Добавить пользователя
                                         string command = "use Test" + '\n' + " Select logins from users__bd where logins='" + reception__string.Split('/')[2].Split('%')[0] + "'";
                                         string log__text = sql__connect(command, true, "Log");
                                         if (log__text != "")
@@ -147,7 +151,7 @@ namespace ServerMarch
                                         client.Send(buffer);
                                         break;}
 
-                          case "Drop":{
+                          case "Drop":{ // Удаление пользователя
 
                                         string command = "use Test" + '\n' + "Select From dbo.[user] where dbo.[user].login='" + reception__string.Split('/')[2].Split('%')[0] + "'";
                                         string log__text = sql__connect(command, true, "Log");
@@ -164,7 +168,7 @@ namespace ServerMarch
                                         client.Send(buffer);
                                         break;}
 
-                          case "IN":
+                          case "IN": // Вход пользователя
                           {
 
                                         string command = "use Test" + '\n' + " Select logins from users__bd where logins='" + reception__string.Split('/')[2].Split('%')[0] + "'";
@@ -185,17 +189,37 @@ namespace ServerMarch
                                         }
                                             break;
                           }
+                                case "Pictury":
+                                    {
+                                        switch(reception__string.Split('/')[2])
+                                        {
+                                            case "get": { break; }
+                                            case "new":
+                                                {
+                                                    string command = "use Test" + '\n' + " DELETE user__image where user_id ='" + reception__string.Split('/')[3];
+                                                    byte[] pictury__byte=new byte[10000000000000];
+                                                    sql__connect(command, false, "");
+                                                    client.Receive(pictury__byte);
+
+                                                    command = "use Test" + '\n' + "Insert into user_id values ('"+ reception__string.Split('/')[3]+"')";
+
+                                                    break;
+                                                }
+                                        }
+
+                                        break;
+                                    }
                        }
 
 
                             break; }
 
-                    case "News" :{
+                    case "News" :{  // Работа с новостями 
 
                                 switch(reception__string.Split('/')[1])
                                 {
 
-                                    case "get":
+                                    case "get": // Получение новостей
                                     {
                                         string command = "use Test " + '\n' + " Select * from News";
                                         string JSON = sql__connect(command, true, "News");
@@ -207,6 +231,53 @@ namespace ServerMarch
                                 }
 
                             break; }
+
+
+                    case "Cars": // Работа с машинами
+                        {
+                            switch (reception__string.Split('/')[1])
+                            {
+                                
+                                case "Add":  // Добавление машины
+                                    {
+                                        //toekn //Mark // name__care //years //pictury
+                                        // Создание токена token пользователя + Марка машины + Наименование амшины 
+                                        string id_car = add__token(reception__string.Split('/')[2],reception__string.Split('/')[3]+reception__string.Split('/')[4]);
+
+                                        string command = " use Test "+ '\n' + " Insert Car  Values ('"+ reception__string.Split('/')[2] + " ', ' "+ id_car + " ' , ' " +  reception__string.Split('/')[3] + " ' , ' " +  reception__string.Split('/')[4] + " ' ";
+                                        sql__connect(command, false, "");
+
+                                        client.Send(Encoding.UTF8.GetBytes("Машина создана"));
+
+
+                                        break;
+                                    }
+                                case "Comment__add": // Добавление коментария
+                                    {
+                                        
+                                        //  Получаемые данные   id car // comment // Author
+
+                                        string command = " use Test " + '\n' + " Insert Comment Values ( '" + reception__string.Split('/')[2] + " ', ' " + reception__string.Split('/')[3] + " ', ' " + reception__string.Split('/')[4] + " ') ";
+
+                                        sql__connect(command, false, "");
+
+                                        client.Send(Encoding.UTF8.GetBytes("Коментарий создан"));
+
+                                        break;
+                                    }
+                                case "Info":     //Получение машин по token пользователя
+                                    {
+                                        string command = " use Test " + '\n' + "Select * from Car where users = '"+reception__string.Split('/')[2]+"'";
+
+                                        string Car =    sql__connect(command, true, "Car__info");
+
+                                        client.Send(Encoding.UTF8.GetBytes(Car));   
+
+                                        break;
+                                    }
+                            }
+                            break;
+                        }
                     case "default": { break; }
                 }
 
